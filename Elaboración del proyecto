@@ -1,0 +1,8 @@
+Durante el desarrollo de este proyecto, arme un chatbot funcional en C++ que combinara una base de conocimiento local con la posibilidad de consultar una inteligencia artificial avanzada como GPT-3.5.
+
+Primero, trabajar con archivos locales y estructuras como std::vector y std::map me ayudó a fortalecer mis fundamentos en programación en C++.
+Aprendí a organizar mejor la información, dividir el código en funciones reutilizables y manejar errores comunes como archivos que no se abren correctamente o entradas mal formateadas.
+
+Luego, el uso de inteligencia artificial para generar ejemplos de código resultó sumamente útil. Me permitió ahorrar tiempo en tareas como la carga de archivos y el diseño de funciones de búsqueda. 
+No se trató solo de copiar y pegar, sino de comprender lo que la IA proponía y adaptarlo al contexto de mi proyecto. 
+A través de este ejercicio, aprendí también a evaluar críticamente las sugerencias generadas por una IA, lo que considero una habilidad clave para el futuro.
