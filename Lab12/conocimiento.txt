@@ -1,0 +1,2 @@
+¿Qué es la inteligencia artificial?|La inteligencia artificial es la simulación de procesos de inteligencia humana por máquinas.
+¿Cómo funciona una red neuronal?|Una red neuronal funciona imitando el cerebro humano mediante capas de nodos interconectados.
