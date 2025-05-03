@@ -1,2 +1,3 @@
-¿Qué es la inteligencia artificial?|La inteligencia artificial es la simulación de procesos de inteligencia humana por máquinas.
-¿Cómo funciona una red neuronal?|Una red neuronal funciona imitando el cerebro humano mediante capas de nodos interconectados.
+¿Cómo estás?|Estoy muy bien, gracias por preguntar.
+¿Qué es un algoritmo?|Un algoritmo es una secuencia de pasos para resolver un problema.
+¿Quién inventó C++?|Bjarne Stroustrup creó el lenguaje C++.
