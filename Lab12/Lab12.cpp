@@ -1,106 +1,127 @@
 #include <iostream>
 #include <fstream>
-#include <sstream>
 #include <string>
-#include <vector>
+#include <sstream>
 #include <map>
+#include <vector>
 #include <algorithm>
 
 using namespace std;
 
-// Estructura para guardar pregunta y respuesta
-struct QA {
-    string pregunta;
-    string respuesta;
-};
 
-// Función para cargar la base de conocimiento
-vector<QA> cargarBaseDeConocimiento(const string& archivo) {
-    vector<QA> base;
-    ifstream file(archivo);
+string trim(const string& str) {
+    size_t start = str.find_first_not_of(" \t\n\r\f\v");
+    size_t end = str.find_last_not_of(" \t\n\r\f\v");
+    return (start == string::npos || end == string::npos) ? "" : str.substr(start, end - start + 1);
+}
+
+void cargarConocimiento(map<string, string>& conocimiento, const string& nombreArchivo) {
+    ifstream archivo(nombreArchivo);
+    if (!archivo.is_open()) {
+        cout << "Error al abrir el archivo de conocimiento." << endl;
+        return;
+    }
+
     string linea;
-
-    while (getline(file, linea)) {
-        size_t separador = linea.find('|');
+    while (getline(archivo, linea)) {
+        size_t separador = linea.find("|");
         if (separador != string::npos) {
-            string pregunta = linea.substr(0, separador);
-            string respuesta = linea.substr(separador + 1);
-            base.push_back({ pregunta, respuesta });
+            string pregunta = trim(linea.substr(0, separador));
+            string respuesta = trim(linea.substr(separador + 1));
+            conocimiento[pregunta] = respuesta;
         }
     }
-    return base;
+
+    archivo.close();
 }
 
-// Conversión a minúsculas
-string aMinusculas(const string& str) {
-    string resultado = str;
-    transform(resultado.begin(), resultado.end(), resultado.begin(), ::tolower);
-    return resultado;
-}
+string buscarExacto(const map<string, string>& conocimiento, const string& pregunta) {
+    string preguntaLower = pregunta;
+    transform(preguntaLower.begin(), preguntaLower.end(), preguntaLower.begin(), ::tolower);
 
-// Búsqueda exacta
-string busquedaExacta(const string& pregunta, const vector<QA>& base) {
-    for (const auto& qa : base) {
-        if (aMinusculas(qa.pregunta) == aMinusculas(pregunta)) {
-            return qa.respuesta;
+    for (const auto& par : conocimiento) {
+        string claveLower = par.first;
+        transform(claveLower.begin(), claveLower.end(), claveLower.begin(), ::tolower);
+
+        if (preguntaLower == claveLower) {
+            return par.second;
         }
     }
     return "";
 }
 
-// Búsqueda por palabras clave (cuenta cuántas palabras coinciden)
-string busquedaPorPalabrasClave(const string& pregunta, const vector<QA>& base) {
-    vector<string> palabrasUsuario;
-    istringstream streamUsuario(aMinusculas(pregunta));
+vector<string> dividirPalabras(const string& frase) {
+    vector<string> palabras;
+    stringstream ss(frase);
     string palabra;
-    while (streamUsuario >> palabra) {
-        palabrasUsuario.push_back(palabra);
+    while (ss >> palabra) {
+        transform(palabra.begin(), palabra.end(), palabra.begin(), ::tolower);
+        palabras.push_back(palabra);
     }
+    return palabras;
+}
 
-    int maxCoincidencias = 0;
+string buscarporPalabrasClave(const map<string, string>& conocimiento, const string& pregunta) {
+    vector<string> palabrasPregunta = dividirPalabras(pregunta);
     string mejorRespuesta = "";
+    int maxCoincidencias = 0;
 
-    for (const auto& qa : base) {
+    for (const auto& par : conocimiento) {
+        vector<string> palabrasBase = dividirPalabras(par.first);
+
         int coincidencias = 0;
-        for (const auto& palabraUsuario : palabrasUsuario) {
-            if (aMinusculas(qa.pregunta).find(palabraUsuario) != string::npos) {
-                coincidencias++;
+        for (const string& palabraPregunta : palabrasPregunta) {
+            for (const string& palabraBase : palabrasBase) {
+                if (palabraPregunta == palabraBase) {
+                    coincidencias++;
+                }
             }
         }
+
         if (coincidencias > maxCoincidencias) {
             maxCoincidencias = coincidencias;
-            mejorRespuesta = qa.respuesta;
+            mejorRespuesta = par.second;
         }
     }
-
-    return mejorRespuesta;
+    if (maxCoincidencias > 0) {
+        return mejorRespuesta;
+    }
+    else {
+        return "";
+    }
 }
 
 int main() {
-	map<string, string> Conocimiento;
-    string archivo = "conocimiento.txt";  
-    vector<QA> base = cargarBaseDeConocimiento(Conocimiento, "C:\Users\50257\OneDrive - Colegio San José de la Encarnación\Escritorio\conocimiento.txt");
+    map<string, string> conocimiento;
 
-    cout << "Chatbot Local (escribe 'salir' para terminar)\n\n";
+    string rutaArchivo = "conocimientos.txt";
+
+    cargarConocimiento(conocimiento, rutaArchivo);
+
+    cout << "Bienvenido a mi ChatBot" << endl;
+    cout << "Escribe 'adios' para terminar el chat." << endl;
 
     string preguntaUsuario;
     while (true) {
-        cout << "Tú: ";
+        cout << "\nTu: ";
         getline(cin, preguntaUsuario);
-        if (aMinusculas(preguntaUsuario) == "salir") break;
 
-        string respuesta = busquedaExacta(preguntaUsuario, base);
+        if (preguntaUsuario == "adios") {
+            cout << "Bot: Hasta luego" << endl;
+            break;
+        }
+
+        string respuesta = buscarExacto(conocimiento, preguntaUsuario);
+
         if (respuesta.empty()) {
-            respuesta = busquedaPorPalabrasClave(preguntaUsuario, base);
+            respuesta = buscarporPalabrasClave(conocimiento, preguntaUsuario);
         }
 
         if (respuesta.empty()) {
-            cout << "Chatbot: Lo siento, no tengo una respuesta para eso.\n";
+            respuesta = "Lo siento, no conozco la respuesta a esa pregunta.";
         }
-        else {
-            cout << "Chatbot: " << respuesta << "\n";
-        }
+
+        cout << "Bot: " << respuesta << endl;
     }
-
     return 0;
 }
