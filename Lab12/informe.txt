@@ -1,15 +1,1 @@
-Informe de Uso de Inteligencia Artificial
 
-¿Qué preguntas hiciste a la IA?
-- ¿Cómo puedo generar ejemplos de código en C++ para cargar un archivo de texto con preguntas y respuestas separadas por un delimitador?
-- ¿Cómo crear funciones simples en C++ para buscar coincidencias exactas y por palabras clave en una lista de preguntas?
-
-¿Qué fragmentos de código o ideas generaste con ayuda de la IA?
-- La función `cargarBaseDeConocimiento`, que abre el archivo "conocimiento.txt" y separa cada línea en pregunta y respuesta usando el carácter '|'.
-- La función `busquedaExacta`, que compara la pregunta del usuario con las almacenadas en la base de datos.
-- La función `busquedaPorPalabrasClave`, que busca las palabras más relevantes dentro de las preguntas conocidas para dar la mejor respuesta posible.
-
-¿Qué aprendiste al usarla?
-- Aprendí cómo diseñar funciones modulares en C++ para cargar y procesar archivos de texto de manera eficiente.
-- Vi la importancia de manejar adecuadamente las entradas del usuario para mejorar la coincidencia de resultados.
-- Entendí cómo separar responsabilidades en funciones pequeñas y claras para que el chatbot sea más fácil de mantener y escalar.
